@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Email Responder Configuration Schema",
+  "description": "Schema for validating email responder configuration files",
+
+  "definitions": {
+    "category": {
+      "type": "object",
+      "required": ["id", "label_en", "label_zh", "description", "keywords"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z_]+$",
+          "description": "Unique category identifier"
+        },
+        "label_en": {
+          "type": "string",
+          "description": "English label"
+        },
+        "label_zh": {
+          "type": "string",
+          "description": "Chinese label"
+        },
+        "description": {
+          "type": "string",
+          "description": "Category description"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Keywords for category matching"
+        }
+      }
+    },
+
+    "routing_rule": {
+      "type": "object",
+      "required": ["auto_send_threshold", "description"],
+      "properties": {
+        "auto_send_threshold": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Minimum confidence for auto-send"
+        },
+        "description": {
+          "type": "string",
+          "description": "Rule description"
+        },
+        "require_product_match": {
+          "type": "boolean",
+          "description": "Whether product match is required"
+        },
+        "require_order_number": {
+          "type": "boolean",
+          "description": "Whether order number is required"
+        },
+        "max_auto_send_per_day": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum auto-sends per day"
+        },
+        "escalate_if_amount_exceeds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Escalate if amount exceeds this value"
+        },
+        "always_notify_human": {
+          "type": "boolean",
+          "description": "Always notify human even if auto-sent"
+        },
+        "escalate_if_urgent": {
+          "type": "boolean",
+          "description": "Escalate if marked as urgent"
+        }
+      }
+    }
+  },
+
+  "categories_schema": {
+    "type": "object",
+    "required": ["categories", "business_hints", "non_business_hints"],
+    "properties": {
+      "categories": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/category"
+        },
+        "minItems": 1
+      },
+      "business_hints": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      },
+      "non_business_hints": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      }
+    }
+  },
+
+  "thresholds_schema": {
+    "type": "object",
+    "required": ["global", "routing_rules", "default"],
+    "properties": {
+      "global": {
+        "type": "object",
+        "required": ["confidence_threshold", "auto_send_minimum_confidence", "business_gate_threshold"],
+        "properties": {
+          "confidence_threshold": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "auto_send_minimum_confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "business_gate_threshold": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        }
+      },
+      "routing_rules": {
+        "type": "object",
+        "patternProperties": {
+          "^[a-z_]+$": {
+            "$ref": "#/definitions/routing_rule"
+          }
+        }
+      },
+      "default": {
+        "$ref": "#/definitions/routing_rule"
+      },
+      "retry": {
+        "type": "object",
+        "properties": {
+          "max_attempts": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "delay_seconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 60.0
+          },
+          "exponential_backoff": {
+            "type": "boolean"
+          }
+        }
+      },
+      "rate_limiting": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "max_auto_send_per_hour": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_auto_send_per_day": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

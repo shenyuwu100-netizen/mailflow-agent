@@ -1,0 +1,42 @@
+{
+  "model": "gpt-5.6-luna",
+  "provider": "cun.ai",
+  "max_requests": 1,
+  "max_completion_tokens_per_request": 900,
+  "synthetic_only": true,
+  "cases": [
+    {
+      "email": {
+        "mailbox": "synthetic",
+        "message_id": "smoke-faq",
+        "sender": "customer@example.com",
+        "subject": "如何查看物流",
+        "body": "请告诉我如何查看物流，谢谢。"
+      },
+      "proposal": {
+        "category": "order_tracking",
+        "confidence": 0.99,
+        "source_id": "tracking-help",
+        "draft": "您好，您可以通过订单详情页查看物流进度和最新配送信息。如需进一步帮助，请提供订单号。",
+        "method": "llm",
+        "usage": {
+          "completion_tokens": 53,
+          "prompt_tokens": 146,
+          "total_tokens": 199
+        }
+      },
+      "decision": {
+        "route": "auto",
+        "reasons": [
+          "low_risk_verified_faq"
+        ],
+        "confidence": 0.99,
+        "source_id": "tracking-help",
+        "reply": "您好，您可以在订单确认邮件中打开物流查询链接，查看承运商更新的进度。如找不到该邮件，请通过原订单渠道联系客服。本回复未查询您的具体订单状态。",
+        "policy_version": "mailflow-1.0",
+        "knowledge_digest": "45db02dfdc412bc75b8be684e7732ffa0700fda3d18323e34c63a7f2d90b7c2c"
+      },
+      "elapsed_seconds": 2.75
+    }
+  ]
+}

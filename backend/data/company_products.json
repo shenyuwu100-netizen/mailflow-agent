@@ -1,0 +1,18 @@
+{
+  "products": [
+    {
+      "product_name": "Sea Freight (Standard)",
+      "unit_price": 120.0,
+      "currency": "USD",
+      "min_order_quantity": 1,
+      "delivery_lead_time_days": 30
+    },
+    {
+      "product_name": "Air Freight (Express)",
+      "unit_price": 380.0,
+      "currency": "USD",
+      "min_order_quantity": 1,
+      "delivery_lead_time_days": 7
+    }
+  ]
+}

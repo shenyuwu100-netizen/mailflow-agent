@@ -1,0 +1,277 @@
+# Company Policy Configuration
+# Defines forbidden patterns, required disclaimers, and compliance rules
+
+version: "1.0"
+description: "Policy rules for reply validation and compliance checking"
+
+# Forbidden Patterns
+# Patterns that should never appear in auto-sent replies
+forbidden_patterns:
+
+  # Financial Commitments
+  financial_commitments:
+    description: "Unauthorized financial promises or guarantees"
+    severity: "blocking"  # blocking, warning, info
+    patterns:
+      - pattern: "\\bguaranteed?\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Cannot guarantee outcomes without approval"
+
+      - pattern: "\\bwe promise\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Avoid absolute promises"
+
+      - pattern: "\\b100%\\s+(refund|money back|satisfaction)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Absolute guarantees require approval"
+
+      - pattern: "\\bfree\\s+(shipping|delivery|upgrade)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Free offers require authorization"
+
+      - pattern: "\\b(discount|coupon|promo)\\s+code\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Discount codes require approval"
+
+  # Specific Pricing
+  specific_pricing:
+    description: "Specific prices without verification"
+    severity: "blocking"
+    patterns:
+      - pattern: "\\$\\d+\\.\\d{2}"
+        regex: true
+        case_sensitive: false
+        reason: "Specific prices must be verified from price list"
+
+      - pattern: "\\b\\d+\\s*(CNY|RMB|yuan)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Specific prices must be verified"
+
+      - pattern: "\\bonly\\s+\\$?\\d+"
+        regex: true
+        case_sensitive: false
+        reason: "Price claims must be verified"
+
+  # Legal Commitments
+  legal_commitments:
+    description: "Legal or binding commitments"
+    severity: "blocking"
+    patterns:
+      - pattern: "\\blegal(ly)?\\s+(binding|obligated|required)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Legal commitments require legal review"
+
+      - pattern: "\\bcontract(ual)?\\s+(obligation|agreement)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Contractual language requires legal review"
+
+      - pattern: "\\bliable\\s+for\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Liability statements require legal review"
+
+  # Specific Dates/Times
+  specific_dates:
+    description: "Specific delivery dates or timeframes without verification"
+    severity: "warning"
+    patterns:
+      - pattern: "\\bwill\\s+arrive\\s+(on|by)\\s+\\w+\\s+\\d+"
+        regex: true
+        case_sensitive: false
+        reason: "Specific delivery dates must be verified"
+
+      - pattern: "\\bguaranteed\\s+delivery\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Cannot guarantee delivery dates"
+
+      - pattern: "\\bwithin\\s+\\d+\\s+(hour|day)s?\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Specific timeframes should be verified"
+
+  # Inappropriate Tone
+  inappropriate_tone:
+    description: "Unprofessional or inappropriate language"
+    severity: "blocking"
+    patterns:
+      - pattern: "\\b(stupid|dumb|idiot)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Offensive language"
+
+      - pattern: "\\bnot our (problem|fault|responsibility)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Dismissive tone"
+
+      - pattern: "\\byou should have\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Blaming customer"
+
+      - pattern: "\\btoo bad\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Dismissive tone"
+
+  # Personal Information Requests
+  personal_info_requests:
+    description: "Requests for sensitive personal information"
+    severity: "blocking"
+    patterns:
+      - pattern: "\\b(password|credit card|social security)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Never request sensitive information via email"
+
+      - pattern: "\\bsend\\s+(us|me)\\s+your\\s+(card|account)\\b"
+        regex: true
+        case_sensitive: false
+        reason: "Never request payment details via email"
+
+# Required Elements
+# Elements that should be present in certain types of replies
+required_elements:
+
+  refund_replies:
+    description: "Required elements for refund-related replies"
+    applies_to_categories: ["order_cancellation", "billing_invoice"]
+    elements:
+      - element: "refund policy reference"
+        pattern: "\\b(refund policy|return policy)\\b"
+        regex: true
+        required: true
+        reason: "Must reference refund policy"
+
+      - element: "processing timeframe"
+        pattern: "\\b(\\d+-\\d+|within \\d+)\\s+(business )?days?\\b"
+        regex: true
+        required: true
+        reason: "Must provide processing timeframe"
+
+  shipping_replies:
+    description: "Required elements for shipping-related replies"
+    applies_to_categories: ["order_tracking", "shipping_time", "shipping_exception"]
+    elements:
+      - element: "tracking information"
+        pattern: "\\b(tracking|track your order)\\b"
+        regex: true
+        required: false
+        reason: "Should provide tracking info when available"
+
+# Approved Language
+# Pre-approved phrases that are safe to use
+approved_language:
+
+  refund_language:
+    - "We will process your refund according to our refund policy"
+    - "Refunds typically take 5-7 business days to process"
+    - "Please refer to our refund policy for details"
+
+  shipping_language:
+    - "Standard shipping typically takes 3-5 business days"
+    - "You can track your order using the tracking number provided"
+    - "Shipping times may vary depending on your location"
+
+  apology_language:
+    - "We sincerely apologize for any inconvenience"
+    - "We apologize for this experience"
+    - "Thank you for your patience and understanding"
+
+  closing_language:
+    - "Please let us know if you have any other questions"
+    - "We're here to help if you need further assistance"
+    - "Thank you for contacting us"
+
+# Authority Limits
+# What automated replies can and cannot commit to
+authority_limits:
+
+  can_commit:
+    - "Provide general product information"
+    - "Explain standard policies"
+    - "Provide tracking information"
+    - "Acknowledge receipt of inquiry"
+    - "Provide general shipping timeframes"
+
+  cannot_commit:
+    - "Specific refund amounts without verification"
+    - "Guaranteed delivery dates"
+    - "Discounts or promotional offers"
+    - "Policy exceptions"
+    - "Legal commitments"
+    - "Custom pricing"
+
+# Validation Rules
+validation_rules:
+
+  # Check for forbidden patterns
+  check_forbidden_patterns:
+    enabled: true
+    action: "block"  # block, warn, log
+
+  # Check for required elements
+  check_required_elements:
+    enabled: true
+    action: "warn"
+
+  # Check for approved language usage
+  prefer_approved_language:
+    enabled: true
+    action: "log"
+
+  # Check authority limits
+  check_authority_limits:
+    enabled: true
+    action: "block"
+
+# Category-Specific Policies
+category_policies:
+
+  order_cancellation:
+    max_auto_refund_amount: 5000  # CNY
+    require_human_review_if_amount_exceeds: 10000
+    must_reference_policy: true
+
+  pricing_inquiry:
+    allow_price_ranges: true
+    allow_specific_prices: false  # Must be verified
+    require_product_verification: true
+
+  billing_invoice:
+    require_human_review: false
+    allow_invoice_generation: false
+    must_verify_account: true
+
+# Compliance Checks
+compliance_checks:
+
+  # GDPR/Privacy
+  privacy_compliance:
+    - check: "No PII in logs"
+      enabled: true
+    - check: "No sensitive data in replies"
+      enabled: true
+
+  # Financial Regulations
+  financial_compliance:
+    - check: "No unauthorized financial commitments"
+      enabled: true
+    - check: "Refund amounts verified"
+      enabled: true
+
+  # Consumer Protection
+  consumer_protection:
+    - check: "No misleading claims"
+      enabled: true
+    - check: "Clear refund policy reference"
+      enabled: true

@@ -1,0 +1,633 @@
+# Rubric-Based Scoring Configuration
+
+# Classification Rubric
+# Evaluates the quality of email category assignment
+classification_rubric:
+  version: "1.0"
+  description: "Structured scoring for email classification quality"
+
+  dimensions:
+    - name: keyword_match
+      weight: 0.25
+      description: "Presence of category-specific keywords in email"
+      scoring_guide:
+        0:
+          label: "No Match"
+          description: "No relevant keywords found"
+          criteria:
+            - "Email contains no category-specific keywords"
+            - "Only generic words present"
+        1:
+          label: "Generic Match"
+          description: "Generic business keywords only"
+          criteria:
+            - "Contains general business terms (order, shipment, etc.)"
+            - "No category-specific keywords"
+        2:
+          label: "Partial Match"
+          description: "Some category-specific keywords"
+          criteria:
+            - "Contains 1-2 category-specific keywords"
+            - "Keywords may be ambiguous"
+        3:
+          label: "Strong Match"
+          description: "Strong category-specific keyword match"
+          criteria:
+            - "Contains 3+ category-specific keywords"
+            - "Keywords clearly indicate category"
+            - "Multiple keyword variations present"
+
+    - name: intent_clarity
+      weight: 0.30
+      description: "Clarity of customer intent in the email"
+      scoring_guide:
+        0:
+          label: "Unclear"
+          description: "Intent unclear or ambiguous"
+          criteria:
+            - "Email is vague or incomplete"
+            - "Multiple possible interpretations"
+            - "Missing critical context"
+        1:
+          label: "Somewhat Clear"
+          description: "Intent somewhat clear but vague"
+          criteria:
+            - "General intent identifiable"
+            - "Lacks specific details"
+            - "Some ambiguity remains"
+        2:
+          label: "Clear"
+          description: "Intent clear with minor ambiguity"
+          criteria:
+            - "Intent clearly stated"
+            - "Minor details missing"
+            - "Single interpretation likely"
+        3:
+          label: "Crystal Clear"
+          description: "Intent crystal clear and specific"
+          criteria:
+            - "Intent explicitly stated"
+            - "All relevant details provided"
+            - "No ambiguity"
+            - "Action requested is clear"
+
+    - name: context_completeness
+      weight: 0.25
+      description: "Sufficient context for accurate categorization"
+      scoring_guide:
+        0:
+          label: "Missing Context"
+          description: "Missing critical context"
+          criteria:
+            - "Essential information absent"
+            - "Cannot determine category confidently"
+            - "Too short or too vague"
+        1:
+          label: "Minimal Context"
+          description: "Minimal context provided"
+          criteria:
+            - "Basic information present"
+            - "Missing supporting details"
+            - "Categorization uncertain"
+        2:
+          label: "Adequate Context"
+          description: "Adequate context for categorization"
+          criteria:
+            - "Sufficient information to categorize"
+            - "Some supporting details present"
+            - "Minor gaps acceptable"
+        3:
+          label: "Rich Context"
+          description: "Rich contextual information"
+          criteria:
+            - "Comprehensive information provided"
+            - "Multiple supporting details"
+            - "Background context included"
+            - "Easy to categorize confidently"
+
+    - name: exclusion_confidence
+      weight: 0.20
+      description: "Confidence that email doesn't belong to other categories"
+      scoring_guide:
+        0:
+          label: "Multiple Categories"
+          description: "Could belong to multiple categories"
+          criteria:
+            - "Email matches 3+ categories equally"
+            - "No clear primary category"
+            - "High overlap with other categories"
+        1:
+          label: "Some Overlap"
+          description: "Some overlap with other categories"
+          criteria:
+            - "Email matches 2 categories"
+            - "Primary category identifiable but uncertain"
+            - "Moderate overlap"
+        2:
+          label: "Minimal Overlap"
+          description: "Minimal overlap with other categories"
+          criteria:
+            - "Clearly belongs to one category"
+            - "Minor overlap with 1 other category"
+            - "Primary category clear"
+        3:
+          label: "Clearly Distinct"
+          description: "Clearly distinct from other categories"
+          criteria:
+            - "Uniquely matches one category"
+            - "No overlap with other categories"
+            - "Unambiguous classification"
+
+  # Confidence mapping: weighted_score (0.0-3.0) → confidence (0.0-1.0)
+  confidence_mapping:
+    formula: "weighted_score / 3.0"
+    min_confidence: 0.0
+    max_confidence: 1.0
+
+# Auto-Send Readiness Rubric
+# Evaluates whether a generated reply is safe to auto-send
+auto_send_rubric:
+  version: "1.0"
+  description: "Structured scoring for auto-send safety assessment"
+
+  dimensions:
+    - name: information_completeness
+      weight: 0.30
+      description: "Quality and completeness of the generated reply"
+      scoring_guide:
+        0:
+          label: "Cannot Respond"
+          description: "Cannot generate any meaningful response"
+          criteria:
+            - "Customer intent completely unclear"
+            - "Email is gibberish or spam"
+            - "Cannot determine what customer wants"
+            - "No appropriate reply template exists"
+        1:
+          label: "Generic Only"
+          description: "Can only provide very generic response"
+          criteria:
+            - "Can acknowledge receipt but cannot address specific need"
+            - "Reply would be unhelpful to customer"
+            - "Lacks category-specific guidance"
+        2:
+          label: "Appropriate Response"
+          description: "Appropriate response but requires customer follow-up"
+          criteria:
+            - "Reply addresses the customer's category/intent"
+            - "Clearly explains what information is missing"
+            - "Provides specific guidance on next steps"
+            - "Professional and helpful tone"
+        3:
+          label: "Complete & Actionable"
+          description: "Complete, professional response that fully addresses the inquiry"
+          criteria:
+            - "Reply is complete, clear, and professional"
+            - "Either: (a) directly resolves the request with all needed info, OR (b) provides clear, actionable guidance for standard 'request information' scenarios"
+            - "Standard templates for requesting missing info (order number, etc.) qualify as complete responses"
+            - "No ambiguity or confusion in the reply"
+
+    - name: risk_level
+      weight: 0.35
+      description: "Risk of incorrect or inappropriate auto-response"
+      scoring_guide:
+        0:
+          label: "High Risk"
+          description: "High risk - legal, financial, or safety implications"
+          criteria:
+            - "Financial commitment involved"
+            - "Legal implications possible"
+            - "Safety concerns present"
+            - "Potential for significant customer harm"
+            - "Requires human judgment"
+        1:
+          label: "Medium Risk"
+          description: "Medium risk - customer satisfaction impact"
+          criteria:
+            - "Could impact customer satisfaction significantly"
+            - "Moderate financial implications"
+            - "Requires some judgment"
+            - "Error could cause frustration"
+        2:
+          label: "Low Risk"
+          description: "Low risk - routine inquiry"
+          criteria:
+            - "Standard inquiry type"
+            - "Minimal financial impact"
+            - "Low chance of error"
+            - "Easy to correct if wrong"
+        3:
+          label: "Minimal Risk"
+          description: "Minimal risk - standard safe response"
+          criteria:
+            - "Routine, common inquiry"
+            - "No financial implications"
+            - "Standard template fits perfectly"
+            - "Very low error probability"
+            - "Requesting missing information is inherently low-risk"
+
+    - name: template_applicability
+      weight: 0.20
+      description: "How well standard template fits this specific case"
+      scoring_guide:
+        0:
+          label: "Doesn't Apply"
+          description: "Template doesn't apply, needs custom response"
+          criteria:
+            - "Unique situation not covered by template"
+            - "Template would be inappropriate"
+            - "Requires custom crafted response"
+        1:
+          label: "Partial Fit"
+          description: "Template partially applies, needs significant customization"
+          criteria:
+            - "Template covers general case"
+            - "Significant modifications needed"
+            - "Multiple placeholders to fill"
+        2:
+          label: "Good Fit"
+          description: "Template mostly applies with minor adjustments"
+          criteria:
+            - "Template covers this scenario"
+            - "Minor customization needed"
+            - "Few placeholders to fill"
+        3:
+          label: "Perfect Fit"
+          description: "Template perfectly matches scenario"
+          criteria:
+            - "Template designed for this exact case"
+            - "Standard 'request information' templates apply perfectly"
+            - "All necessary placeholders have values, or no placeholders needed"
+            - "Reply appropriately addresses customer's category"
+
+    - name: policy_alignment
+      weight: 0.15
+      description: "Response aligns with company policies and guidelines"
+      scoring_guide:
+        0:
+          label: "Potential Violation"
+          description: "Potential policy violation"
+          criteria:
+            - "Response may violate company policy"
+            - "Commitment beyond authority"
+            - "Contradicts established guidelines"
+        1:
+          label: "Uncertain"
+          description: "Uncertain policy alignment"
+          criteria:
+            - "Policy applicability unclear"
+            - "Edge case not covered by policy"
+            - "Requires policy interpretation"
+        2:
+          label: "Likely Compliant"
+          description: "Likely policy compliant"
+          criteria:
+            - "Follows general policy guidelines"
+            - "No obvious violations"
+            - "Standard response type"
+        3:
+          label: "Clearly Compliant"
+          description: "Clearly policy compliant"
+          criteria:
+            - "Explicitly follows policy"
+            - "Pre-approved response type"
+            - "No policy concerns"
+
+  # Auto-send decision thresholds
+  thresholds:
+    auto_send_minimum: 2.5  # Weighted average must be >= 2.5/3.0
+    require_all_above: 1    # No dimension can score 0 (blocks auto-send)
+    high_confidence: 2.7    # Scores >= 2.7 are high confidence
+
+  # Confidence mapping: weighted_score (0.0-3.0) → confidence (0.0-1.0)
+  confidence_mapping:
+    formula: "weighted_score / 3.0"
+    min_confidence: 0.0
+    max_confidence: 1.0
+
+# LLM Prompts for Rubric Scoring
+prompts:
+  classification_scoring:
+    system: |
+      You are an expert email classifier. Evaluate the email against the provided rubric.
+
+      For each dimension, assign a score (0-3) based on the scoring guide criteria.
+      Provide brief reasoning for each score.
+
+      Respond with valid JSON only.
+
+    user_template: |
+      Email to classify:
+      Subject: {subject}
+      Body: {body}
+
+      Proposed Category: {category}
+
+      Rubric:
+      {rubric_yaml}
+
+      Evaluate this email and respond with JSON:
+      {{
+        "scores": {{
+          "keyword_match": {{"score": 0-3, "reasoning": "..."}},
+          "intent_clarity": {{"score": 0-3, "reasoning": "..."}},
+          "context_completeness": {{"score": 0-3, "reasoning": "..."}},
+          "exclusion_confidence": {{"score": 0-3, "reasoning": "..."}}
+        }},
+        "weighted_score": <float 0.0-3.0>,
+        "confidence": <float 0.0-1.0>
+      }}
+
+  auto_send_scoring:
+    system: |
+      You are an expert at evaluating email reply safety. Assess whether the generated reply is safe to auto-send.
+
+      IMPORTANT SCORING PRINCIPLES:
+      1. A reply that professionally requests missing information (e.g., "please provide order number") is a COMPLETE and APPROPRIATE response - it should score 3/3 on information_completeness.
+      2. Requesting missing information is LOW RISK - it does not make commitments or decisions, just guides the customer.
+      3. Standard templates for common scenarios (order not found, please provide info) are PERFECT fits - they should score 3/3 on template_applicability.
+
+      Do NOT penalize replies for needing customer follow-up. A professional "please provide X" reply is complete and correct.
+
+      For each dimension, assign a score (0-3) based on the scoring guide criteria.
+      Provide brief reasoning for each score.
+
+      Respond with valid JSON only.
+
+    user_template: |
+      Original Email:
+      Subject: {subject}
+      Body: {body}
+
+      Generated Reply:
+      {reply_text}
+
+      Category: {category}
+
+      Rubric:
+      {rubric_yaml}
+
+      Evaluate this reply and respond with JSON:
+      {{
+        "scores": {{
+          "information_completeness": {{"score": 0-3, "reasoning": "..."}},
+          "risk_level": {{"score": 0-3, "reasoning": "..."}},
+          "template_applicability": {{"score": 0-3, "reasoning": "..."}},
+          "policy_alignment": {{"score": 0-3, "reasoning": "..."}}
+        }},
+        "weighted_score": <float 0.0-3.0>,
+        "confidence": <float 0.0-1.0>,
+        "auto_send_recommended": <boolean>
+      }}
+
+  reply_quality_validation:
+    system: |
+      You are an expert at validating email reply quality. Check for factual accuracy, tone appropriateness, completeness, and policy compliance.
+
+      For each dimension, assign a score (0-3) based on the scoring guide criteria.
+      Identify specific issues if any are found.
+
+      Respond with valid JSON only.
+
+    user_template: |
+      Original Email:
+      Subject: {subject}
+      Body: {body}
+
+      Generated Reply:
+      {reply_text}
+
+      Category: {category}
+
+      Company Information (for fact-checking):
+      {company_info}
+
+      Rubric:
+      {rubric_yaml}
+
+      Evaluate this reply and respond with JSON:
+      {{
+        "scores": {{
+          "factual_accuracy": {{"score": 0-3, "reasoning": "...", "issues": []}},
+          "tone_appropriateness": {{"score": 0-3, "reasoning": "...", "issues": []}},
+          "completeness": {{"score": 0-3, "reasoning": "...", "issues": []}},
+          "policy_compliance": {{"score": 0-3, "reasoning": "...", "issues": []}}
+        }},
+        "weighted_score": <float 0.0-3.0>,
+        "quality_score": <float 0.0-1.0>,
+        "blocking_issues": [],
+        "warnings": [],
+        "passed": <boolean>
+      }}
+
+# Reply Quality Validation Rubric
+# Evaluates the quality of generated replies before auto-send
+reply_quality_rubric:
+  version: "1.0"
+  description: "Multi-stage validation for reply quality assurance"
+
+  dimensions:
+    - name: factual_accuracy
+      weight: 0.35
+      description: "Reply contains only factually accurate information"
+      blocking_threshold: 1  # Score <= 1 blocks auto-send
+      scoring_guide:
+        0:
+          label: "Hallucination Detected"
+          description: "Contains false or unverifiable claims"
+          criteria:
+            - "Makes claims not supported by company information"
+            - "Invents product details, prices, or policies"
+            - "Contradicts known facts"
+            - "Provides specific information without verification"
+          examples:
+            - "Claims product features not in catalog"
+            - "States prices not in price list"
+            - "Promises services not offered"
+        1:
+          label: "Questionable Claims"
+          description: "Contains unverified or ambiguous claims"
+          criteria:
+            - "Makes claims that cannot be verified"
+            - "Provides vague information that may be inaccurate"
+            - "Uses outdated information"
+          examples:
+            - "References products without checking availability"
+            - "Mentions policies without verification"
+        2:
+          label: "Mostly Accurate"
+          description: "Mostly accurate with minor uncertainties"
+          criteria:
+            - "Core facts are accurate"
+            - "Minor details may be generic"
+            - "No significant inaccuracies"
+          examples:
+            - "Provides accurate product info with generic shipping details"
+            - "Correct policy reference with standard timeframes"
+        3:
+          label: "Fully Verified"
+          description: "All claims verified against company information"
+          criteria:
+            - "All facts cross-referenced with company data"
+            - "Product details match catalog"
+            - "Prices and policies verified"
+            - "No unverified claims"
+          examples:
+            - "Product details match catalog exactly"
+            - "Prices quoted from official price list"
+
+    - name: tone_appropriateness
+      weight: 0.20
+      description: "Reply tone is professional and appropriate"
+      blocking_threshold: 0  # Score = 0 blocks auto-send
+      scoring_guide:
+        0:
+          label: "Inappropriate"
+          description: "Tone is inappropriate or unprofessional"
+          criteria:
+            - "Overly casual or informal"
+            - "Aggressive or defensive"
+            - "Dismissive of customer concerns"
+            - "Uses inappropriate language"
+          examples:
+            - "Whatever, just return it"
+            - "That's not our problem"
+            - "You should have read the instructions"
+        1:
+          label: "Somewhat Appropriate"
+          description: "Tone is acceptable but could be improved"
+          criteria:
+            - "Slightly too casual or formal"
+            - "Lacks empathy"
+            - "Could be more customer-friendly"
+          examples:
+            - "Your order was delayed. Check tracking."
+            - "We cannot process this request."
+        2:
+          label: "Professional"
+          description: "Tone is professional and courteous"
+          criteria:
+            - "Polite and respectful"
+            - "Appropriate formality level"
+            - "Shows basic empathy"
+          examples:
+            - "Thank you for contacting us. We'll help you with this."
+            - "We apologize for the inconvenience."
+        3:
+          label: "Excellent"
+          description: "Tone is warm, empathetic, and highly professional"
+          criteria:
+            - "Warm and friendly"
+            - "Shows genuine empathy"
+            - "Culturally appropriate"
+            - "Builds customer relationship"
+          examples:
+            - "We sincerely apologize for this experience and are here to make it right."
+            - "Thank you for your patience. We truly appreciate your business."
+
+    - name: completeness
+      weight: 0.25
+      description: "Reply addresses all customer questions and concerns"
+      blocking_threshold: 1  # Score <= 1 blocks auto-send
+      scoring_guide:
+        0:
+          label: "Incomplete"
+          description: "Fails to address main question"
+          criteria:
+            - "Ignores primary customer question"
+            - "Provides irrelevant information"
+            - "Missing critical information"
+          examples:
+            - "Customer asks about refund, reply discusses shipping"
+            - "Multiple questions asked, only one answered"
+        1:
+          label: "Partially Complete"
+          description: "Addresses some but not all concerns"
+          criteria:
+            - "Answers main question but misses follow-ups"
+            - "Provides partial information"
+            - "Leaves some questions unanswered"
+          examples:
+            - "Answers 2 of 3 questions asked"
+            - "Provides general info but lacks specifics requested"
+        2:
+          label: "Mostly Complete"
+          description: "Addresses all major concerns"
+          criteria:
+            - "Answers all explicit questions"
+            - "May miss implicit concerns"
+            - "Provides sufficient information"
+          examples:
+            - "Answers all questions but doesn't anticipate next steps"
+            - "Provides requested info without additional context"
+        3:
+          label: "Comprehensive"
+          description: "Fully addresses all concerns and anticipates needs"
+          criteria:
+            - "Answers all questions thoroughly"
+            - "Anticipates follow-up questions"
+            - "Provides additional helpful information"
+            - "Includes next steps"
+          examples:
+            - "Answers all questions plus provides tracking link and expected delivery"
+            - "Explains process and what customer should expect next"
+
+    - name: policy_compliance
+      weight: 0.20
+      description: "Reply complies with company policies and guidelines"
+      blocking_threshold: 0  # Score = 0 blocks auto-send
+      scoring_guide:
+        0:
+          label: "Policy Violation"
+          description: "Violates company policy"
+          criteria:
+            - "Makes unauthorized commitments"
+            - "Contradicts company policy"
+            - "Exceeds authority limits"
+            - "Contains forbidden language"
+          examples:
+            - "Guarantees refund without checking policy"
+            - "Promises specific delivery date without verification"
+            - "Offers discount without authorization"
+        1:
+          label: "Policy Uncertain"
+          description: "Policy compliance unclear"
+          criteria:
+            - "Edge case not covered by policy"
+            - "Requires policy interpretation"
+            - "May need approval"
+          examples:
+            - "Unusual request not in standard policy"
+            - "Borderline case requiring judgment"
+        2:
+          label: "Policy Compliant"
+          description: "Follows company policies"
+          criteria:
+            - "Adheres to standard policies"
+            - "No policy violations"
+            - "Within authority limits"
+          examples:
+            - "Follows standard refund policy"
+            - "Uses approved language and commitments"
+        3:
+          label: "Exemplary Compliance"
+          description: "Exemplifies policy best practices"
+          criteria:
+            - "Perfectly aligned with policy"
+            - "Uses pre-approved language"
+            - "Demonstrates policy understanding"
+          examples:
+            - "Uses exact policy wording for commitments"
+            - "Includes required disclaimers"
+
+  # Validation thresholds
+  thresholds:
+    minimum_quality_score: 0.75  # Overall quality must be >= 75%
+    blocking_score: 1  # Any dimension <= blocking_threshold blocks auto-send
+    warning_score: 2   # Dimensions = 2 generate warnings
+
+  # Confidence mapping
+  confidence_mapping:
+    formula: "weighted_score / 3.0"
+    min_quality: 0.0
+    max_quality: 1.0

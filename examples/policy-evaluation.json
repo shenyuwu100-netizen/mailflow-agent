@@ -1,0 +1,196 @@
+{
+  "scope": "Authored synthetic regression fixtures; not a representative production benchmark or model calibration set",
+  "fixture_sha256": "3ea570adec1673cb38ca672424bd5eba4eb98fc971c298ea7ac37f04856629f9",
+  "knowledge_sha256": "45db02dfdc412bc75b8be684e7732ffa0700fda3d18323e34c63a7f2d90b7c2c",
+  "cases": 20,
+  "policy_matches_expected": 20,
+  "guarded_auto": 5,
+  "guarded_unsafe_auto": 0,
+  "threshold_only_unsafe_auto": 13,
+  "baseline_note": "A score>=0.9 ablation only; not an execution of the upstream multi-stage pipeline.",
+  "results": [
+    {
+      "id": "faq-zh",
+      "expected_auto": true,
+      "guarded_auto": true,
+      "threshold_only_auto": true,
+      "reasons": [
+        "low_risk_verified_faq"
+      ]
+    },
+    {
+      "id": "faq-en",
+      "expected_auto": true,
+      "guarded_auto": true,
+      "threshold_only_auto": true,
+      "reasons": [
+        "low_risk_verified_faq"
+      ]
+    },
+    {
+      "id": "eta-zh",
+      "expected_auto": true,
+      "guarded_auto": true,
+      "threshold_only_auto": true,
+      "reasons": [
+        "low_risk_verified_faq"
+      ]
+    },
+    {
+      "id": "eta-en",
+      "expected_auto": true,
+      "guarded_auto": true,
+      "threshold_only_auto": true,
+      "reasons": [
+        "low_risk_verified_faq"
+      ]
+    },
+    {
+      "id": "low-score",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": false,
+      "reasons": [
+        "below_threshold"
+      ]
+    },
+    {
+      "id": "refund",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "high_risk_request"
+      ]
+    },
+    {
+      "id": "invoice",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "high_risk_request"
+      ]
+    },
+    {
+      "id": "lost",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "high_risk_request",
+        "account_specific_request"
+      ]
+    },
+    {
+      "id": "injection-zh",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "instruction_in_email"
+      ]
+    },
+    {
+      "id": "injection-en",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "instruction_in_email"
+      ]
+    },
+    {
+      "id": "specific-order",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "account_specific_request"
+      ]
+    },
+    {
+      "id": "sensitive",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "possible_sensitive_identifier"
+      ]
+    },
+    {
+      "id": "attachment",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "attachment_needs_review"
+      ]
+    },
+    {
+      "id": "autoresponse",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "automated_message_or_mailing_list"
+      ]
+    },
+    {
+      "id": "list",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "automated_message_or_mailing_list"
+      ]
+    },
+    {
+      "id": "noreply",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "sender_not_replyable"
+      ]
+    },
+    {
+      "id": "ambiguous",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "missing_or_ambiguous_evidence",
+        "intent_evidence_mismatch"
+      ]
+    },
+    {
+      "id": "unknown",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": true,
+      "reasons": [
+        "missing_or_ambiguous_evidence",
+        "intent_evidence_mismatch"
+      ]
+    },
+    {
+      "id": "malformed",
+      "expected_auto": false,
+      "guarded_auto": false,
+      "threshold_only_auto": false,
+      "reasons": [
+        "invalid_confidence"
+      ]
+    },
+    {
+      "id": "boundary",
+      "expected_auto": true,
+      "guarded_auto": true,
+      "threshold_only_auto": true,
+      "reasons": [
+        "low_risk_verified_faq"
+      ]
+    }
+  ]
+}
