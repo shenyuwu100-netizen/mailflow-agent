@@ -40,9 +40,26 @@ def test_duplicate_post_does_not_simulate_again(client):
 def test_live_model_budget_is_enforced(tmp_path):
     from unittest.mock import patch
     client = create_app(tmp_path / "budget.db", live_model=True, max_model_calls=1).test_client()
-    with patch("mailflow.model.propose", return_value={"error": "test_failure"}) as call:
+    with patch("mailflow.model.classify", return_value={"error": "test_failure"}) as call:
         data = {"subject": "test", "body": "test", "automatic": True}
         assert post(client, "/api/ingest", data).json["status"] == "review"
         second = post(client, "/api/ingest", data).json
     assert call.call_count == 1
     assert second["decision"]["analysis"]["error"] == "model_call_budget_exhausted"
+
+
+def test_oversized_mail_is_rejected_not_truncated(client):
+    response = post(client, "/api/ingest", {"subject": "如何查看物流", "body": "如何查看物流" + " " * 16000 + "我要退款", "automatic": True})
+    assert response.status_code == 400
+    assert client.get('/api/jobs').json['budget']['used'] == 0
+
+
+def test_envelope_metadata_reaches_policy(client):
+    result = post(client, '/api/ingest', {"subject": "如何查看物流", "body": "如何查看物流", "automatic": True, "headers": {"Auto-Submitted": "auto-replied"}}).json
+    assert result['status'] == 'review'
+    assert 'automated_message_or_mailing_list' in result['decision']['reasons']
+
+
+def test_dispatch_route_cannot_bypass_review(client):
+    job = post(client, '/api/ingest', {'subject': '退款', 'body': '我要退款', 'automatic': True}).json
+    assert post(client, '/api/jobs/'+job['id']+'/dispatch', {}).status_code == 409

@@ -1,0 +1,132 @@
+{
+  "model": "gpt-5.6-luna",
+  "provider": "cun.ai",
+  "date": "2026-09-06",
+  "scope": "Synthetic integration smoke tests, not a production-accuracy estimate",
+  "total_requests_including_preliminary_runs": 10,
+  "total_reported_tokens_including_preliminary_runs": 4213,
+  "note": "Two preliminary cases were retested after tightening language/category instructions and lexical retrieval. The three final representative cases are included below.",
+  "cases": [
+    {
+      "email": {
+        "body": "请告诉我如何查看物流，谢谢。",
+        "mailbox": "demo",
+        "message_id": "api-v2-faq",
+        "sender": "customer@example.com",
+        "subject": "如何查看物流"
+      },
+      "classification": {
+        "category": "order_tracking",
+        "confidence": 0.99,
+        "intents": [
+          "order_tracking"
+        ],
+        "risks": [],
+        "summary": "客户询问如何查看物流信息。",
+        "usage": {
+          "completion_tokens": 41,
+          "prompt_tokens": 153,
+          "total_tokens": 194
+        }
+      },
+      "draft": {
+        "citations": [
+          "tracking-help"
+        ],
+        "draft": "您好，您可以打开订单确认邮件中的物流查询链接，查看承运商更新的物流进度。如果找不到订单确认邮件，请通过原订单渠道联系客服。本回复未查询您的具体订单状态。",
+        "unresolved": [],
+        "usage": {
+          "completion_tokens": 132,
+          "prompt_tokens": 285,
+          "total_tokens": 417
+        }
+      },
+      "expected_route": "auto",
+      "expected_reply": "您好，您可以在订单确认邮件中打开物流查询链接，查看承运商更新的进度。如找不到该邮件，请通过原订单渠道联系客服。本回复未查询您的具体订单状态。"
+    },
+    {
+      "email": {
+        "body": "My parcel arrived damaged. What information should I provide to have this investigated?",
+        "mailbox": "demo",
+        "message_id": "api-v2-en-final",
+        "sender": "customer@example.com",
+        "subject": "Damaged parcel"
+      },
+      "classification": {
+        "category": "shipping_exception",
+        "confidence": 0.99,
+        "intents": [
+          "shipping_exception"
+        ],
+        "risks": [
+          "missing_facts"
+        ],
+        "summary": "The customer reports that their parcel arrived damaged and asks what information is needed to investigate it.",
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 259,
+          "total_tokens": 314
+        }
+      },
+      "draft": {
+        "citations": [
+          "damage-process"
+        ],
+        "draft": "I’m sorry your parcel arrived damaged. To help investigate, please keep the original packaging and take clear photos of the damage. Please also provide your order reference and a description of the issue through the original order channel. An agent will need to check the carrier records. Compensation, a replacement, or a specific resolution timeframe cannot be confirmed before verification.",
+        "unresolved": [],
+        "usage": {
+          "completion_tokens": 90,
+          "prompt_tokens": 335,
+          "total_tokens": 425
+        }
+      },
+      "expected_route": "review",
+      "expected_reply": "I’m sorry your parcel arrived damaged. To help investigate, please keep the original packaging and take clear photos of the damage. Please also provide your order reference and a description of the issue through the original order channel. An agent will need to check the carrier records. Compensation, a replacement, or a specific resolution timeframe cannot be confirmed before verification."
+    },
+    {
+      "email": {
+        "body": "请告诉我如何查看物流。另外我要申请退款，需要准备什么信息？",
+        "mailbox": "demo",
+        "message_id": "api-v2-mixed-final",
+        "sender": "customer@example.com",
+        "subject": "物流查询与退款请求"
+      },
+      "classification": {
+        "category": "order_cancellation",
+        "confidence": 0.99,
+        "intents": [
+          "order_tracking",
+          "order_cancellation"
+        ],
+        "risks": [
+          "refund_request"
+        ],
+        "summary": "客户希望了解如何查询物流，并申请退款及咨询所需准备的信息。",
+        "usage": {
+          "completion_tokens": 57,
+          "prompt_tokens": 262,
+          "total_tokens": 319
+        }
+      },
+      "draft": {
+        "citations": [
+          "tracking-help",
+          "refund-process"
+        ],
+        "draft": "您好，关于物流查询，您可以打开订单确认邮件中的物流查询链接，查看承运商更新的进度。如果找不到该邮件，请通过原订单渠道联系客服。该回复未查询您的具体订单状态。\n\n关于退款或取消申请，请通过原订单渠道提供订单编号和退款原因，以便客服人工核实订单与履约状态。核实完成前，无法确认退款是否获批、退款金额或到账日期。请勿提供密码、验证码或完整银行卡号。",
+        "unresolved": [
+          "订单编号",
+          "退款原因",
+          "具体订单状态及履约状态"
+        ],
+        "usage": {
+          "completion_tokens": 144,
+          "prompt_tokens": 476,
+          "total_tokens": 620
+        }
+      },
+      "expected_route": "review",
+      "expected_reply": "您好，关于物流查询，您可以打开订单确认邮件中的物流查询链接，查看承运商更新的进度。如果找不到该邮件，请通过原订单渠道联系客服。该回复未查询您的具体订单状态。\n\n关于退款或取消申请，请通过原订单渠道提供订单编号和退款原因，以便客服人工核实订单与履约状态。核实完成前，无法确认退款是否获批、退款金额或到账日期。请勿提供密码、验证码或完整银行卡号。"
+    }
+  ]
+}
